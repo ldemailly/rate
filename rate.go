@@ -18,7 +18,7 @@ type simpleLimiter struct {
 	count int64
 }
 
-const warnThreshold = 10 * time.Millisecond
+const warnThreshold = -10 * time.Millisecond
 
 func (l *simpleLimiter) Take() time.Time {
 	now := time.Now()
@@ -30,7 +30,7 @@ func (l *simpleLimiter) Take() time.Time {
 	sleepTime := targetElapsedDuration - elapsed
 	log.LogVf("Elapsed %v, Expected for %d: %v, Sleeping for %v", elapsed, l.count, targetElapsedDuration, sleepTime)
 	if sleepTime < warnThreshold {
-		log.Warnf("Falling behind by %v at %d, rate %v too high?", sleepTime, l.count, l.rate)
+		log.Warnf("Falling behind by %v at %d, rate %v too high?", -sleepTime, l.count, l.rate)
 		return now
 	}
 	time.Sleep(sleepTime)
